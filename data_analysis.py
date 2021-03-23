@@ -41,17 +41,19 @@ data = np.array(data)
 rate = 1/40e-12
 freq = np.linspace(0, rate, len(time))
 delay_array = np.linspace(-0.1e-9, 0.1e-9,51)
+delay_array = np.arange(-500,500,1)*1e-12
+delay_array = np.array([-0.02,0])*1e-9
 P_delay = []
 gain = []
 
 for ii in delay_array:
-    pwm = signal.square(2*np.pi*250e6*(time+ii),duty=0.03)+1
+    pwm = signal.square(2*np.pi*250e6*(time+ii),duty=0.1)+1
     sig_gate = data*pwm
     X_sig = np.fft.fft(data)/len(pwm)
     X_gate = np.fft.fft(sig_gate)/len(pwm)
     
-    Pmed_sig = 10*np.log10(np.mean(np.abs(X_sig)**2,axis=0)/50/1e-3)
-    Pmed_gat = 10*np.log10(np.mean(np.abs(X_gate)**2,axis=0)/50/1e-3)
+    Pmed_sig = 10*np.log10(np.mean(np.abs(X_sig),axis=0)/50/1e-3)
+    Pmed_gat = 10*np.log10(np.mean(np.abs(X_gate),axis=0)/50/1e-3)
     
     P_delay.append(Pmed_sig)
     
